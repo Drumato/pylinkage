@@ -10,7 +10,7 @@ class OutputArch(enum.Enum):
 
     def to_string(self) -> str:
         if self == OutputArch.X86_64:
-            return "x86-64"
+            return "i386:x86-64"
         elif self == OutputArch.I386:
             return "i386"
         else:

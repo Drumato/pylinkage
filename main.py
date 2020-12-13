@@ -2,17 +2,28 @@ import pylinkage as pyl
 
 
 def main():
-    generator = pyl.Generator()
+    generator = pyl.ScriptGenerator()
     generator.architecture = pyl.OutputArch.X86_64
-    # generator.object_format = pyl.OutputFormat.ELF64_X86_64
-    generator.mode = pyl.OutputMode.SCRIPT
+    generator.object_format = pyl.OutputFormat.ELF64_X86_64
     generator.entry_point = "_start"
 
-    if (err := generator.output_script("sample.scr")) != None:
+    generator.add_memory_region(
+        "RAM",
+        0x20000000,
+        pyl.RegionLength(12, pyl.MemoryUnit.KILO),
+        [pyl.RegionAttr.EXECUTABLE, pyl.RegionAttr.READWRITE],
+    )
+    generator.add_memory_region(
+        "ROM",
+        0x08000000,
+        pyl.RegionLength(64, pyl.MemoryUnit.KILO),
+        [pyl.RegionAttr.EXECUTABLE, pyl.RegionAttr.READONLY],
+    )
+
+    if (err := generator.output_ldscript("sample.scr")) != None:
         print(err)
         exit(1)
 
 
 if __name__ == "__main__":
     main()
-
